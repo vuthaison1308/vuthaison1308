@@ -7,6 +7,7 @@ local window = lib:Window('TheaugHub')
 window:Toggle('Enable', function(enabled)
      loadstring(game:HttpGet"https://raw.githubusercontent.com/vuthaison1308/vuthaison1308/main/SlapBattles")()
 end)
+   else
 	game.Players.LocalPlayer:kick("Game Not Supported")
 	wait(3)
 	game:Shutdown()
