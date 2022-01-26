@@ -1,0 +1,13 @@
+local PlaceId = game.PlaceId
+
+if PlaceId == 6284583030 then
+        local lib = loadstring(game:HttpGet('https://raw.githubusercontent.com/vuthaison1308/vuthaison1308/main/TEST'))()
+local window = lib:Window('TEST')
+
+window:Toggle('TEST', function(enabled)
+     loadstring(game:HttpGet"https://raw.githubusercontent.com/vuthaison1308/vuthaison1308/main/SlapBattles")()
+end)
+	game.Players.LocalPlayer:kick("สคริปไม่มีเกมนี้ ไอ้เวร")
+	wait(1)
+	game:Shutdown()
+end
