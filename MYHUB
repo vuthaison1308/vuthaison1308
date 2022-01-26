@@ -1,6 +1,6 @@
 local PlaceId = game.PlaceId
 
-if PlaceId == 6284583030 then
+if PlaceId == 6403373529 then
         local lib = loadstring(game:HttpGet('https://raw.githubusercontent.com/vuthaison1308/vuthaison1308/main/TEST'))()
 local window = lib:Window('TheaugHub')
 
