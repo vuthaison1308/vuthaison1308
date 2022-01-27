@@ -18,7 +18,7 @@ end)
 local window = lib:Window('TheaugHub')
 
 window:Toggle('Enable', function(enabled)
-     loadstring(game:HttpGet"https://raw.githubusercontent.com/vuthaison1308/vuthaison1308/main/SlapBattles")()
+     https://raw.githubusercontent.com/vuthaison1308/BeAParkourNinja/main/Script/theaug")()
      wait(1)
      game:GetService("StarterGui"):SetCore("SendNotification", {Title = "Press F9", Text = "To see supported game"})
 local player = game.Players.LocalPlayer
