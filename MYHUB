@@ -33,6 +33,23 @@ for i,v in pairs(Servers.data) do
   end
 end
      end)
+window:Toggle('Ctrl + Click = Teleport', function(enabled)
+     CTRL = true
+    local Plr = game:GetService("Players").LocalPlayer
+    local Mouse = Plr:GetMouse()
+    Mouse.Button1Down:connect(
+        function()
+            if not game:GetService("UserInputService"):IsKeyDown(Enum.KeyCode.LeftControl) then
+                return
+            end
+            if not Mouse.Target then
+                return
+            end
+            if CTRL then
+                Plr.Character:MoveTo(Mouse.Hit.p)
+            end
+        end)
+     end)  
 window:Toggle('Kick Me From The Server', function(enabled)
      game.Players.LocalPlayer:kick("Got Kicked By Press The Button")
      end)  
@@ -71,6 +88,23 @@ for i,v in pairs(Servers.data) do
   end
 end
      end) 
+window:Toggle('Ctrl + Click = Teleport', function(enabled)
+     CTRL = true
+    local Plr = game:GetService("Players").LocalPlayer
+    local Mouse = Plr:GetMouse()
+    Mouse.Button1Down:connect(
+        function()
+            if not game:GetService("UserInputService"):IsKeyDown(Enum.KeyCode.LeftControl) then
+                return
+            end
+            if not Mouse.Target then
+                return
+            end
+            if CTRL then
+                Plr.Character:MoveTo(Mouse.Hit.p)
+            end
+        end)
+     end)  
 window:Toggle('Kick Me From The Server', function(enabled)
      game.Players.LocalPlayer:kick("Got Kicked By Press The Button")
      end)  
