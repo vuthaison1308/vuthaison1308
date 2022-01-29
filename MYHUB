@@ -26,19 +26,19 @@ print"-Be A Parkour Ninja"
 print"-Slap Battles"
 end)
 window:Toggle('Hop Random Server', function(enabled)
-        wait ()
-local Servers = game.HttpService:JSONDecode(game:HttpGet("https://games.roblox.com/v1/games/147848991/servers/Public?sortOrder=Asc&limit=100"))
+     local Servers = game.HttpService:JSONDecode(game:HttpGet("https://games.roblox.com/v1/games/147848991/servers/Public?sortOrder=Asc&limit=100"))
 for i,v in pairs(Servers.data) do
   if v.playing ~= v.maxPlayers then
       game:GetService('TeleportService'):TeleportToPlaceInstance(game.PlaceId, v.id)
   end
 end
-window:Toggle('Kick Me From The Game', function(enabled)
-        game.Players.LocalPlayer:kick("Got Kicked By Press The Button")
-        end)
-window:Toggle('Close Roblox App', function(enabled)
-     game:Shutdown() 
-   end)
+     end)
+window:Toggle('Kick Me From The Server', function(enabled)
+     game.Players.LocalPlayer:kick("Got Kicked By Press The Button")
+     end)  
+window:Toggle('Close Roblox', function(enabled)
+     game:Shutdown()
+     end)
  elseif PlaceId == 147848991 then
                 game:GetService("StarterGui"):SetCore("SendNotification", {Title = "Checking Game", Text = "Please Wait"})
 local player = game.Players.LocalPlayer
@@ -62,23 +62,23 @@ local mouse = player:GetMouse()
 print"Supported Game:"
 print"-Be A Parkour Ninja"
 print"-Slap Battles"
-     end)
+     end)  
 window:Toggle('Hop Random Server', function(enabled)
-        wait ()
-local Servers = game.HttpService:JSONDecode(game:HttpGet("https://games.roblox.com/v1/games/147848991/servers/Public?sortOrder=Asc&limit=100"))
+     local Servers = game.HttpService:JSONDecode(game:HttpGet("https://games.roblox.com/v1/games/147848991/servers/Public?sortOrder=Asc&limit=100"))
 for i,v in pairs(Servers.data) do
   if v.playing ~= v.maxPlayers then
       game:GetService('TeleportService'):TeleportToPlaceInstance(game.PlaceId, v.id)
   end
 end
-window:Toggle('Kick Me From The Game', function(enabled)
-        game.Players.LocalPlayer:kick("Got Kicked By Press The Button")
-        end)
-window:Toggle('Close Roblox App', function(enabled)
-     game:Shutdown() 
-   end)
+     end) 
+window:Toggle('Kick Me From The Server', function(enabled)
+     game.Players.LocalPlayer:kick("Got Kicked By Press The Button")
+     end)  
+window:Toggle('Close Roblox', function(enabled)
+     game:Shutdown()
+     end)
 else
     game.Players.LocalPlayer:kick("Game Not Supported")
-    wait(3)
+      wait(3)
     game:Shutdown()
     end
