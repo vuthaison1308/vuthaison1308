@@ -32,7 +32,7 @@ for i,v in pairs(Servers.data) do
   if v.playing ~= v.maxPlayers then
       game:GetService('TeleportService'):TeleportToPlaceInstance(game.PlaceId, v.id)
   end
-end)
+end
 window:Toggle('Kick Me From The Game', function(enabled)
         game.Players.LocalPlayer:kick("Got Kicked By Press The Button")
         end)
