@@ -25,6 +25,14 @@ print"Supported Game:"
 print"-Be A Parkour Ninja"
 print"-Slap Battles"
 end)
+window:Toggle('Hop Random Server', function(enabled)
+        wait ()
+local Servers = game.HttpService:JSONDecode(game:HttpGet("https://games.roblox.com/v1/games/147848991/servers/Public?sortOrder=Asc&limit=100"))
+for i,v in pairs(Servers.data) do
+  if v.playing ~= v.maxPlayers then
+      game:GetService('TeleportService'):TeleportToPlaceInstance(game.PlaceId, v.id)
+  end
+end)
 window:Toggle('Kick Me From The Game', function(enabled)
         game.Players.LocalPlayer:kick("Got Kicked By Press The Button")
         end)
@@ -55,6 +63,14 @@ print"Supported Game:"
 print"-Be A Parkour Ninja"
 print"-Slap Battles"
      end)
+window:Toggle('Hop Random Server', function(enabled)
+        wait ()
+local Servers = game.HttpService:JSONDecode(game:HttpGet("https://games.roblox.com/v1/games/147848991/servers/Public?sortOrder=Asc&limit=100"))
+for i,v in pairs(Servers.data) do
+  if v.playing ~= v.maxPlayers then
+      game:GetService('TeleportService'):TeleportToPlaceInstance(game.PlaceId, v.id)
+  end
+end
 window:Toggle('Kick Me From The Game', function(enabled)
         game.Players.LocalPlayer:kick("Got Kicked By Press The Button")
         end)
