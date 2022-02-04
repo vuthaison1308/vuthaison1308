@@ -14,37 +14,25 @@ local lib = loadstring(game:HttpGet('https://raw.githubusercontent.com/vuthaison
 local window = lib:Window('TheaugHub')
 
 window:Toggle('Hitbox Expanding', function(enabled)
-    _G.HeadSize = 20
-    local enemies = workspace.enemies
-    while wait() do
-      for _,v in next, enemies:GetChildren() do
-    if v.Name ~= game:GetService('Players').LocalPlayer.Name then
-    pcall(function()
-           v.HumanoidRootPart.Size = Vector3.new(_G.HeadSize,_G.HeadSize,_G.HeadSize)
-         v.HumanoidRootPart.Material = "Neon"
-           v.HumanoidRootPart.BrickColor = BrickColor.new("Really blue")
-           v.HumanoidRootPart.Transparency = 0.7
-           v.HumanoidRootPart.CanCollide = false
-    end)
-    end
-      end
-    end
-     wait(1)
+     loadstring(game:HttpGet('https://raw.githubusercontent.com/vuthaison1308/vuthaison1308/main/NPChitbox/ByTheaug'))()
+      wait(1)
      game:GetService("StarterGui"):SetCore("SendNotification", {Title = "Press F9", Text = "To see supported game"})
 local player = game.Players.LocalPlayer
 local mouse = player:GetMouse()
 print"Supported Game:"
 print"-Be A Parkour Ninja"
 print"-Slap Battles"
+print"-Zombie Attack"
 end)
-window:Toggle('Hop Random Server', function(enabled)
-     local Servers = game.HttpService:JSONDecode(game:HttpGet("https://games.roblox.com/v1/games/1240123653/servers/Public?sortOrder=Asc&limit=100"))
-for i,v in pairs(Servers.data) do
-  if v.playing ~= v.maxPlayers then
-      game:GetService('TeleportService'):TeleportToPlaceInstance(game.PlaceId, v.id)
-  end
+window:Toggle('Dupe Gun Bullets', function(enabled)
+     local rac = require(game:GetService("ReplicatedStorage").GunData)
+for k,v in pairs(rac) do 
+    v.Firerate=1000
+    v.Automatic=true
+    v.ReloadTime=0
 end
-     end)
+game.Players.LocalPlayer.Humanoid.Health=0
+end)
 window:Toggle('Ctrl + Click = Teleport', function(enabled)
      CTRL = true
     local Plr = game:GetService("Players").LocalPlayer
