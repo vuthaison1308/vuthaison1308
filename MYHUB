@@ -1,9 +1,11 @@
 local PlaceId = game.PlaceId
 if PlaceId == 6403373529 then
-        https://raw.githubusercontent.com/vuthaison1308/vuthaison1308/main/SlapBattlesScript/By/Theaug
+        loadstring(game:HttpGet('https://raw.githubusercontent.com/vuthaison1308/vuthaison1308/main/SlapBattlesScript/By/Theaug'))()
  elseif PlaceId == 147848991 then
-                https://raw.githubusercontent.com/vuthaison1308/vuthaison1308/main/BeAParkourNinjaScript/ByTheaug
-else
+        loadstring(game:HttpGet('https://raw.githubusercontent.com/vuthaison1308/vuthaison1308/main/BeAParkourNinjaScript/ByTheaug'))()
+ elseif PlaceId == 1240123653 then
+        loadstring(game:HttpGet('https://raw.githubusercontent.com/vuthaison1308/vuthaison1308/main/ZombieAttackScript/ByTheaug'))()
+ else
     game.Players.LocalPlayer:kick("Game Not Supported")
       wait(3)
     game:Shutdown()
