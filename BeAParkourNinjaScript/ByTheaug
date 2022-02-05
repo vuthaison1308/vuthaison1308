@@ -1,36 +1,132 @@
-game:GetService("StarterGui"):SetCore("SendNotification", {Title = "Checking Game", Text = "Please Wait"})
-local player = game.Players.LocalPlayer
-local mouse = player:GetMouse()
-        wait(2)
-      game:GetService("StarterGui"):SetCore("SendNotification", {Title = "Be A Parkour Ninja", Text = "Checking Done"})
-local player = game.Players.LocalPlayer
-local mouse = player:GetMouse()
-       wait(2)
-      game:GetService("StarterGui"):SetCore("SendNotification", {Title = "Loading UI", Text = "Please Wait 2 Seconds"})
-      wait(2)
-local lib = loadstring(game:HttpGet('https://raw.githubusercontent.com/vuthaison1308/vuthaison1308/main/TEST'))()
-local window = lib:Window('TheaugHub')
+local VLib = loadstring(game:HttpGet("https://raw.githubusercontent.com/vep1032/VepStuff/main/VL"))()
 
-window:Toggle('Hitbox Expanding', function(enabled)
-     loadstring(game:HttpGet"https://raw.githubusercontent.com/vuthaison1308/vuthaison1308/main/SlapBattles")()
-     wait(1)
-     game:GetService("StarterGui"):SetCore("SendNotification", {Title = "Press F9", Text = "To see supported game"})
-local player = game.Players.LocalPlayer
-local mouse = player:GetMouse()
-print"Supported Game:"
-print"-Be A Parkour Ninja"
-print"-Slap Battles"
-     end)  
-window:Toggle('Hop Random Server', function(enabled)
-     local Servers = game.HttpService:JSONDecode(game:HttpGet("https://games.roblox.com/v1/games/147848991/servers/Public?sortOrder=Asc&limit=100"))
-for i,v in pairs(Servers.data) do
-  if v.playing ~= v.maxPlayers then
-      game:GetService('TeleportService'):TeleportToPlaceInstance(game.PlaceId, v.id)
-  end
-end
-     end) 
-window:Toggle('Ctrl + Click = Teleport', function(enabled)
-     CTRL = true
+local s = VLib:Window("THEAUG HUB", "Be a parkour ninja", "S")
+
+local ss = s:Tab("Players")
+
+ss:Button("Hitbox Expander",function()
+    game:GetService("StarterGui"):SetCore("SendNotification", {Title = "Expanded", Text = "Now other players headsize are 17"})
+    local player = game.Players.LocalPlayer
+    local mouse = player:GetMouse()
+    
+    -- Settings
+    
+    bind = ""
+    bind2 = "w"
+    bind3 = "p"
+    
+    -- Script
+    
+    mouse.KeyDown:connect(function(key)
+    if key == bind then
+    player.Character.HumanoidRootPart.CFrame = CFrame.new(1254.09656, 137.906067, -172.128204)
+    end
+    end)
+    
+    mouse.KeyDown:connect(function(key2)
+    if key2 == bind2 then
+    _G.HeadSize = 17
+    _G.Disabled = true
+    
+    
+    if _G.Disabled then
+    for i,v in next, game:GetService('Players'):GetPlayers() do
+    if v.Name ~= game:GetService('Players').LocalPlayer.Name then
+    pcall(function()
+    v.Character.HumanoidRootPart.Size = Vector3.new(_G.HeadSize,_G.HeadSize,_G.HeadSize)
+    v.Character.HumanoidRootPart.Transparency = 0.7
+    v.Character.HumanoidRootPart.BrickColor = BrickColor.new("Bright red")
+    v.Character.HumanoidRootPart.Material = "Neon"
+    v.Character.HumanoidRootPart.CanCollide = false
+    end)
+    end
+    end
+    end
+    end
+    end)
+    
+    mouse.KeyDown:connect(function(key3)
+    if key3 == bind3 then
+    _G.HeadSize = 17
+    _G.Disabled = true
+    
+    
+    for i,v in next, game:GetService('Players'):GetPlayers() do
+    if v.Name ~= game:GetService('Players').LocalPlayer.Name then
+    pcall(function()
+    v.Character.HumanoidRootPart.Size = Vector3.new(2, 2, 1)
+    v.Character.HumanoidRootPart.Transparency = 1
+    v.Character.HumanoidRootPart.BrickColor = BrickColor.new("Medium stone grey")
+    v.Character.HumanoidRootPart.Material = "Plastic"
+    v.Character.HumanoidRootPart.CanCollide = false
+    end)
+    end
+    end
+    end
+    end)
+end)
+ss:Button("Invisible (50% Working)",function()
+    -- FE Invisible
+
+Local = game:GetService('Players').LocalPlayer
+Char  = Local.Character
+touched,tpdback = false, false
+Local.CharacterAdded:connect(function(char)
+    if script.Disabled ~= true then
+        wait(.25)
+        loc = Char.HumanoidRootPart.Position
+        Char:MoveTo(box.Position + Vector3.new(0,.5,0))
+    end
+end)
+game:GetService('UserInputService').InputBegan:connect(function(key)
+    if key.KeyCode == Enum.KeyCode.Equals then
+        if script.Disabled ~= true then
+            script.Disabled = true
+            print'you may re-execute'
+        end
+    end
+end)
+box = Instance.new('Part',workspace)
+box.Anchored = true
+box.CanCollide = true
+box.Size = Vector3.new(10,1,10)
+box.Position = Vector3.new(0,10000,0)
+box.Touched:connect(function(part)
+    if (part.Parent.Name == Local.Name) then
+        if touched == false then
+            touched = true
+            function apply()
+                if script.Disabled ~= true then
+                    no = Char.HumanoidRootPart:Clone()
+                    wait(.25)
+                    Char.HumanoidRootPart:Destroy()
+                    no.Parent = Char
+                    Char:MoveTo(loc)
+                    touched = false
+                end end
+            if Char then
+                apply()
+            end
+        end
+    end
+end)
+repeat wait() until Char
+loc = Char.HumanoidRootPart.Position
+Char:MoveTo(box.Position + Vector3.new(0,.5,0))
+local ss = s:Tab("Teleports")
+ss:Button("Teleport Tool",function()
+    mouse = game.Players.LocalPlayer:GetMouse()
+tool = Instance.new("Tool")
+tool.RequiresHandle = false
+tool.Name = "Teleport Tool"
+tool.Activated:connect(function()
+local pos = mouse.Hit+Vector3.new(0,2.5,0)
+pos = CFrame.new(pos.X,pos.Y,pos.Z)
+game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = pos
+end)
+tool.Parent = game.Players.LocalPlayer.Backpack
+ss:Button("Ctrl + Click = Teleport",function()
+    CTRL = true
     local Plr = game:GetService("Players").LocalPlayer
     local Mouse = Plr:GetMouse()
     Mouse.Button1Down:connect(
@@ -44,11 +140,10 @@ window:Toggle('Ctrl + Click = Teleport', function(enabled)
             if CTRL then
                 Plr.Character:MoveTo(Mouse.Hit.p)
             end
-        end)
-     end)  
-window:Toggle('Kick Me From The Server', function(enabled)
-     game.Players.LocalPlayer:kick("Got Kicked By Press The Button")
-     end)  
-window:Toggle('Close Roblox', function(enabled)
-     game:Shutdown()
-     end)
+        end
+    )
+    
+
+    ss:Colorpicker("Colorpicker",Color3.fromRGB(255, 1, 1),function(t)
+        print(t)
+            end)
