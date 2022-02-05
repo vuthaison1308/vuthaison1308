@@ -65,8 +65,8 @@ ss:Button("Hitbox Expander",function()
     end
     end)
 end)
-ss:Button("Invisible (50% Working)",function()
-    -- FE Invisible
+ss:Button("Invisible (50% working)",function()
+        -- FE Invisible
 
 Local = game:GetService('Players').LocalPlayer
 Char  = Local.Character
@@ -113,18 +113,8 @@ end)
 repeat wait() until Char
 loc = Char.HumanoidRootPart.Position
 Char:MoveTo(box.Position + Vector3.new(0,.5,0))
-local ss = s:Tab("Teleports")
-ss:Button("Teleport Tool",function()
-    mouse = game.Players.LocalPlayer:GetMouse()
-tool = Instance.new("Tool")
-tool.RequiresHandle = false
-tool.Name = "Teleport Tool"
-tool.Activated:connect(function()
-local pos = mouse.Hit+Vector3.new(0,2.5,0)
-pos = CFrame.new(pos.X,pos.Y,pos.Z)
-game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = pos
 end)
-tool.Parent = game.Players.LocalPlayer.Backpack
+local ss = s:Tab("Teleports")
 ss:Button("Ctrl + Click = Teleport",function()
     CTRL = true
     local Plr = game:GetService("Players").LocalPlayer
@@ -142,8 +132,23 @@ ss:Button("Ctrl + Click = Teleport",function()
             end
         end
     )
-    
+end)
+ss:Button("Teleport Tool",function()
+    mouse = game.Players.LocalPlayer:GetMouse()
+tool = Instance.new("Tool")
+tool.RequiresHandle = false
+tool.Name = "Theaug's Teleport Tool System"
+tool.Activated:connect(function()
+local pos = mouse.Hit+Vector3.new(0,2.5,0)
+pos = CFrame.new(pos.X,pos.Y,pos.Z)
+game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = pos
+end)
+tool.Parent = game.Players.LocalPlayer.Backpack
+end)
 
-    ss:Colorpicker("Colorpicker",Color3.fromRGB(255, 1, 1),function(t)
-        print(t)
-            end)
+local ss = s:Tab("GUI Setting")
+
+ss:Colorpicker("Colorpicker",Color3.fromRGB(255, 1, 1),function(t)
+    print(t)
+        end)
+    
