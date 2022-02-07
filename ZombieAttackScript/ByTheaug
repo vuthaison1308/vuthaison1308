@@ -1,40 +1,52 @@
-game:GetService("StarterGui"):SetCore("SendNotification", {Title = "Checking Game", Text = "Please Wait"})
-local player = game.Players.LocalPlayer
-local mouse = player:GetMouse()
-        wait(2)
-        game:GetService("StarterGui"):SetCore("SendNotification", {Title = "Zombie Attack", Text = "Checking Done"})
-local player = game.Players.LocalPlayer
-local mouse = player:GetMouse()
-       wait(2)
-        game:GetService("StarterGui"):SetCore("SendNotification", {Title = "Loading UI", Text = "Please Wait 2 Seconds"})
-       wait(2)
-local player = game.Players.LocalPlayer
-local mouse = player:GetMouse()       
-local lib = loadstring(game:HttpGet('https://raw.githubusercontent.com/vuthaison1308/vuthaison1308/main/TEST'))()
-local window = lib:Window('TheaugHub')
 
-window:Toggle('Hitbox Expanding', function(enabled)
-     loadstring(game:HttpGet('https://raw.githubusercontent.com/vuthaison1308/vuthaison1308/main/NPChitbox/ByTheaug'))()
-      wait(1)
-     game:GetService("StarterGui"):SetCore("SendNotification", {Title = "Press F9", Text = "To see supported game"})
-local player = game.Players.LocalPlayer
-local mouse = player:GetMouse()
-print"Supported Game:"
-print"-Be A Parkour Ninja"
-print"-Slap Battles"
-print"-Zombie Attack"
+local VLib = loadstring(game:HttpGet("https://raw.githubusercontent.com/vep1032/VepStuff/main/VL"))()
+
+local s = VLib:Window("THEAUG HUB", "Be a parkour ninja", "S")
+
+local ss = s:Tab("Kill NPCs")
+
+ss:Toggle("Hitbox Expander",function(sondeptrai)
+    A = sondeptrai
 end)
-window:Toggle('Dupe Gun Bullets', function(enabled)
-     local rac = require(game:GetService("ReplicatedStorage").GunData)
-for k,v in pairs(rac) do 
-    v.Firerate=1000
-    v.Automatic=true
-    v.ReloadTime=0
-end
-game.Players.LocalPlayer.Humanoid.Health=0
+HeadSize = 5
+ss:Slider("Hitbox Size",0,100,5,function(sondeptrai)
+    HeadSize = sondeptrai
+    end)
+
+    local enemies = workspace.enemies
+    spawn(function()
+        while wait() do
+            if A then
+                for _,v in next, enemies:GetChildren() do
+                    if v.Name ~= game:GetService('Players').LocalPlayer.Name then
+                        pcall(function()
+                            v.HumanoidRootPart.Size = Vector3.new(HeadSize,HeadSize,HeadSize)
+                            v.HumanoidRootPart.Material = "Neon"
+                            v.HumanoidRootPart.BrickColor = BrickColor.new("Really blue")
+                            v.HumanoidRootPart.Transparency = 0.7
+                            v.HumanoidRootPart.CanCollide = false
+                        end)
+                    end
+                end
+            end
+        end
+    end)
+
+    local ss = s:Tab("Teleports")
+    ss:Button("Teleport Tool",function()
+    mouse = game.Players.LocalPlayer:GetMouse()
+tool = Instance.new("Tool")
+tool.RequiresHandle = false
+tool.Name = "Theaug's Teleport Tool System"
+tool.Activated:connect(function()
+local pos = mouse.Hit+Vector3.new(0,2.5,0)
+pos = CFrame.new(pos.X,pos.Y,pos.Z)
+game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = pos
 end)
-window:Toggle('Ctrl + Click = Teleport', function(enabled)
-     CTRL = true
+tool.Parent = game.Players.LocalPlayer.Backpack
+end)
+ss:Button("Enable Ctrl + Click = Teleport",function()
+    CTRL = true
     local Plr = game:GetService("Players").LocalPlayer
     local Mouse = Plr:GetMouse()
     Mouse.Button1Down:connect(
@@ -48,11 +60,87 @@ window:Toggle('Ctrl + Click = Teleport', function(enabled)
             if CTRL then
                 Plr.Character:MoveTo(Mouse.Hit.p)
             end
+        end
+    )
+end)
+    ss:Button("Disable Ctrl + Click = Teleport",function()
+        CTRL = false
+        local Plr = game:GetService("Players").LocalPlayer
+        local Mouse = Plr:GetMouse()
+        Mouse.Button1Down:connect(
+            function()
+                if not game:GetService("UserInputService"):IsKeyDown(Enum.KeyCode.LeftControl) then
+                    return
+                end
+                if not Mouse.Target then
+                    return
+                end
+                if CTRL then
+                    Plr.Character:MoveTo(Mouse.Hit.p)
+                end
+            end
+        )
+    end)
+    local ss = s:Tab("Gun Bullets Dupe")
+    ss:Button("Disable Gun Bullets Dupe",function()
+    local rac = require(game:GetService("ReplicatedStorage").GunData)
+for k,v in pairs(rac) do 
+    v.Firerate=1
+    v.Automatic=true
+    v.ReloadTime=0
+end
+end)
+    ss:Button("Gun Bullets Dupe x5",function()
+    local rac = require(game:GetService("ReplicatedStorage").GunData)
+for k,v in pairs(rac) do 
+    v.Firerate=5
+    v.Automatic=true
+    v.ReloadTime=0
+end
+end)
+ss:Button("Gun Bullets Dupe x10",function()
+    local rac = require(game:GetService("ReplicatedStorage").GunData)
+for k,v in pairs(rac) do 
+    v.Firerate=10
+    v.Automatic=true
+    v.ReloadTime=0
+end
+end)
+ss:Button("Gun Bullets Dupe x50",function()
+    local rac = require(game:GetService("ReplicatedStorage").GunData)
+for k,v in pairs(rac) do 
+    v.Firerate=50
+    v.Automatic=true
+    v.ReloadTime=0
+end
+end)
+ss:Button("Gun Bullets Dupe x100",function()
+    local rac = require(game:GetService("ReplicatedStorage").GunData)
+for k,v in pairs(rac) do 
+    v.Firerate=100
+    v.Automatic=true
+    v.ReloadTime=0
+end
+end)
+ss:Button("Gun Bullets Dupe x500",function()
+    local rac = require(game:GetService("ReplicatedStorage").GunData)
+for k,v in pairs(rac) do 
+    v.Firerate=500
+    v.Automatic=true
+    v.ReloadTime=0
+end
+end)
+ss:Button("Gun Bullets Dupe x1000",function()
+local rac = require(game:GetService("ReplicatedStorage").GunData)
+for k,v in pairs(rac) do 
+    v.Firerate=500
+    v.Automatic=true
+    v.ReloadTime=0
+end
+end)
+    local ss = s:Tab("GUI Setting")
+
+ss:Colorpicker("Colorpicker",Color3.fromRGB(255, 1, 1),function(t)
+    print(t)
         end)
-     end)  
-window:Toggle('Kick Me From The Server', function(enabled)
-     game.Players.LocalPlayer:kick("Got Kicked By Press The Button")
-     end)  
-window:Toggle('Close Roblox', function(enabled)
-     game:Shutdown()
-     end)
+    
