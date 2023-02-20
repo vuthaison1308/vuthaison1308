@@ -1,3 +1,0 @@
-getgenv().serialkey = "YRXZH-LLMXI-TMRUF"
-getgenv().id = "472566341690458112"
-loadstring(game:HttpGet"https://raw.githubusercontent.com/xQuartyx/Paid/main/script.lua")()
