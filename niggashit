@@ -1,0 +1,22 @@
+#include <stdio.h>
+int main()
+{
+    int ong, ba, nhomdacbiet;
+    int lan = 0;
+    do
+    {
+        printf("Nhap m So Ong Tao, n So Ba Tao, k So Nhom Lam Nhiem Vu Dac Biet: ");
+        scanf("%d %d %d", &ong, &ba, &nhomdacbiet);
+    } while (ong < 0 || ba < 0 || nhomdacbiet < 0);
+    while (ong > 0 && ba > 0)
+    {
+        ong -= 2;
+        ba -= 1;
+        int bienphu = ong + ba;
+        if (bienphu > nhomdacbiet)
+        {
+            lan++;
+        }
+    }
+    printf("%d", lan);
+}
