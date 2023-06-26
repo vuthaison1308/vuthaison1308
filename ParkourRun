@@ -6,9 +6,9 @@ if getgenv().HopDelay == nil then
 end
 spawn(function()
 	for i, v in pairs(game:GetService("Workspace"):GetChildren()) do
-    	if v.Name ~= "CurrentStages" and v.Name ~= "Lobby" then
-        	v:Destroy()
-    	end
+    		if v.Name ~= "CurrentStages" and v.Name ~= "Lobby" then
+        		v:Destroy()
+    		end
 	end
 end)
 spawn(function()
