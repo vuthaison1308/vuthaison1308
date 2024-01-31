@@ -18,3 +18,17 @@ string csl(string a, string b){
     reverse(all(a));
     return a;
 }
+/// another choice
+string csl(string a, string b) {
+    int carry = 0;
+    int diff = a.size() - b.size();
+    if (diff > 0) b.insert(b.begin(), diff, '0');
+    else a.insert(a.begin(), -diff, '0');
+    for (int i = a.size() - 1; i >= 0; i--) {
+        int temp = a[i] - '0' + b[i] - '0' + carry;
+        carry = temp / 10;
+        a[i] = temp % 10 + '0';
+    }
+    if (carry > 0) a.insert(a.begin(), carry + '0');
+    return a;
+}
