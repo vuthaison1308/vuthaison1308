@@ -8,14 +8,13 @@ string csl(string a, string b){
         if (f<0) a+=t;
         else b+=t;
     }
-    string c(a.size(), '0');
     int saver=0, temp;
     for (int i = 0; i < a.size(); i++){
         temp = (a[i]-'0')+(b[i]-'0')+saver;
-        c[i]=temp%10 + '0';
+        a[i]=temp%10 + '0';
         saver=temp/10;
     }
-    if (saver) c.push_back(saver + '0');
-    reverse(all(c));
-    return c;
+    if (saver) a.push_back(saver + '0');
+    reverse(all(a));
+    return a;
 }
