@@ -5,9 +5,10 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local LocalPlayer = Players.LocalPlayer
 local cam = workspace.CurrentCamera
 
-local TELEPORT_DISTANCE = 2.5  -- Giảm từ 5 xuống 2.5
-local CLICK_DELAY = 0.1  -- Giảm delay click
+local TELEPORT_DISTANCE = 2.5
+local CLICK_DELAY = 0.05  -- Giảm delay click xuống
 local TARGET_SWITCH_DELAY = 2
+local SAFE_HEIGHT = 300  -- Độ cao bay lên khi máu thấp
 
 local EquipRemote = ReplicatedStorage:WaitForChild("KnitPackages"):WaitForChild("_Index"):WaitForChild("sleitnick_knit@1.7.0"):WaitForChild("knit"):WaitForChild("Services"):WaitForChild("InventoryService"):WaitForChild("RE"):WaitForChild("updateInventory")
 local EquipArgs = {"eue", "PhongLon"}
@@ -27,18 +28,24 @@ local function ensureWeaponEquipped()
    local toolInBackpack = backpack:FindFirstChild(WEAPON_NAME)
    if toolInBackpack then
        humanoid:EquipTool(toolInBackpack)
-       task.wait(0.1)  -- Giảm delay
        return
    end
    
    pcall(function()
        EquipRemote:FireServer(unpack(EquipArgs))
-       local newTool = backpack:WaitForChild(WEAPON_NAME, 5)
+       local newTool = backpack:WaitForChild(WEAPON_NAME, 3)
        if newTool and humanoid then
            humanoid:EquipTool(newTool)
-           task.wait(0.1)  -- Giảm delay
        end
    end)
+end
+
+local function getMyHealthPercent()
+   local character = LocalPlayer.Character
+   if not character then return 0 end
+   local humanoid = character:FindFirstChildOfClass("Humanoid")
+   if not humanoid then return 0 end
+   return (humanoid.Health / humanoid.MaxHealth) * 100
 end
 
 local function teleportBehindPlayer(player)
@@ -50,12 +57,21 @@ local function teleportBehindPlayer(player)
    if not myHRP then return end
 
    local targetHRP = player.Character.HumanoidRootPart
+   local myHealthPercent = getMyHealthPercent()
    
-   local lookVector = targetHRP.CFrame.LookVector
-   local teleportPosition = targetHRP.Position - (lookVector * TELEPORT_DISTANCE)
+   local teleportPosition
    
-   local lookAt = CFrame.new(teleportPosition, targetHRP.Position)
-   myHRP.CFrame = lookAt
+   if myHealthPercent < 40 then
+       -- Bay lên đầu mục tiêu 300 stud khi máu dưới 40%
+       teleportPosition = targetHRP.Position + Vector3.new(0, SAFE_HEIGHT, 0)
+       myHRP.CFrame = CFrame.new(teleportPosition, targetHRP.Position)
+   else
+       -- Teleport bình thường phía sau
+       local lookVector = targetHRP.CFrame.LookVector
+       teleportPosition = targetHRP.Position - (lookVector * TELEPORT_DISTANCE)
+       local lookAt = CFrame.new(teleportPosition, targetHRP.Position)
+       myHRP.CFrame = lookAt
+   end
 end
 
 local function attackOnce()
@@ -64,19 +80,51 @@ local function attackOnce()
    local centerY = screenSize.Y / 2
    
    VIM:SendMouseButtonEvent(centerX, centerY, 0, true, nil, 0)
-   task.wait(0.02)  -- Giảm delay click
    VIM:SendMouseButtonEvent(centerX, centerY, 0, false, nil, 0)
 end
 
 local function isTargetValid(player)
    if not player or player == LocalPlayer then return false end
    if not player.Character or not player.Character:FindFirstChild("Humanoid") then return false end
-   if player.Character.Humanoid.Health <= 0 then return false end
+   
+   local targetHumanoid = player.Character.Humanoid
+   if targetHumanoid.Health <= 0 then return false end
    
    -- Skip nếu player đang ngồi
-   if player.Character.Humanoid.Sit then return false end
+   if targetHumanoid.Sit then return false end
+   
+   -- Skip nếu máu target <= 1%
+   local healthPercent = (targetHumanoid.Health / targetHumanoid.MaxHealth) * 100
+   if healthPercent <= 1 then return false end
    
    return true
+end
+
+-- Tele liên tục với RunService
+local teleportConnection
+local currentTarget
+
+local function startTeleporting(target)
+   if teleportConnection then
+       teleportConnection:Disconnect()
+   end
+   
+   currentTarget = target
+   teleportConnection = RunService.Heartbeat:Connect(function()
+       if isTargetValid(currentTarget) then
+           pcall(function()
+               teleportBehindPlayer(currentTarget)
+           end)
+       end
+   end)
+end
+
+local function stopTeleporting()
+   if teleportConnection then
+       teleportConnection:Disconnect()
+       teleportConnection = nil
+   end
+   currentTarget = nil
 end
 
 task.spawn(function()
@@ -86,24 +134,25 @@ task.spawn(function()
        for _, targetPlayer in ipairs(allPlayers) do
            
            if isTargetValid(targetPlayer) then
+               startTeleporting(targetPlayer)  -- Bắt đầu tele liên tục
                
                while isTargetValid(targetPlayer) do
                    pcall(function()
                        ensureWeaponEquipped()
                        
                        if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild(WEAPON_NAME) then
-                           teleportBehindPlayer(targetPlayer)  -- Tele liên tục mỗi loop
                            attackOnce()
                        end
                    end)
                    
-                   task.wait(CLICK_DELAY)  -- Chỉ delay cho click, không delay cho tele
+                   task.wait(CLICK_DELAY)
                end
                
+               stopTeleporting()  -- Dừng tele khi target không còn valid
                task.wait(TARGET_SWITCH_DELAY)
            end
        end
        
-       task.wait(0.1)  -- Giảm delay chính
+       task.wait(0.05)
    end
 end)
