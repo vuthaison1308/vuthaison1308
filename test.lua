@@ -5,8 +5,8 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local LocalPlayer = Players.LocalPlayer
 local cam = workspace.CurrentCamera
 
-local TELEPORT_DISTANCE = 5
-local CLICK_DELAY = 0.25
+local TELEPORT_DISTANCE = 2.5  -- Giảm từ 5 xuống 2.5
+local CLICK_DELAY = 0.1  -- Giảm delay click
 local TARGET_SWITCH_DELAY = 2
 
 local EquipRemote = ReplicatedStorage:WaitForChild("KnitPackages"):WaitForChild("_Index"):WaitForChild("sleitnick_knit@1.7.0"):WaitForChild("knit"):WaitForChild("Services"):WaitForChild("InventoryService"):WaitForChild("RE"):WaitForChild("updateInventory")
@@ -27,7 +27,7 @@ local function ensureWeaponEquipped()
    local toolInBackpack = backpack:FindFirstChild(WEAPON_NAME)
    if toolInBackpack then
        humanoid:EquipTool(toolInBackpack)
-       task.wait(0.2)
+       task.wait(0.1)  -- Giảm delay
        return
    end
    
@@ -36,7 +36,7 @@ local function ensureWeaponEquipped()
        local newTool = backpack:WaitForChild(WEAPON_NAME, 5)
        if newTool and humanoid then
            humanoid:EquipTool(newTool)
-           task.wait(0.2)
+           task.wait(0.1)  -- Giảm delay
        end
    end)
 end
@@ -64,7 +64,7 @@ local function attackOnce()
    local centerY = screenSize.Y / 2
    
    VIM:SendMouseButtonEvent(centerX, centerY, 0, true, nil, 0)
-   task.wait(0.05)
+   task.wait(0.02)  -- Giảm delay click
    VIM:SendMouseButtonEvent(centerX, centerY, 0, false, nil, 0)
 end
 
@@ -92,18 +92,18 @@ task.spawn(function()
                        ensureWeaponEquipped()
                        
                        if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild(WEAPON_NAME) then
-                           teleportBehindPlayer(targetPlayer)
+                           teleportBehindPlayer(targetPlayer)  -- Tele liên tục mỗi loop
                            attackOnce()
                        end
                    end)
                    
-                   task.wait(CLICK_DELAY)
+                   task.wait(CLICK_DELAY)  -- Chỉ delay cho click, không delay cho tele
                end
                
                task.wait(TARGET_SWITCH_DELAY)
            end
        end
        
-       task.wait(1)
+       task.wait(0.1)  -- Giảm delay chính
    end
 end)
