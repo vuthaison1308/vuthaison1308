@@ -152,7 +152,7 @@ elseif placeId == 116495829188952 then
     end)
 
     task.spawn(function()
-        while true do
+        while wait(0.5) do
             local args = {
             {
                 isPrivate = true,
