@@ -130,13 +130,13 @@ task.spawn(function()
         local success, err = pcall(function()
             local profileData = game:GetService("ReplicatedStorage").Remotes.Inventory.GetProfileData:InvokeServer()
             if profileData and profileData.Coins then
-                local currentCoins = tostring(profileData.Materials.Owned.BeachBalls2025)
-                CoinsLabel.Text = "Beachballs: " .. currentCoins
+                local currentCoins = tostring(profileData.Materials.Owned.Candies2025)
+                CoinsLabel.Text = "Candies: " .. currentCoins
             end
         end)
         
         if not success then
-            CoinsLabel.Text = "Beachballs: Error"
+            CoinsLabel.Text = "Candies: Error"
         end
         
         wait(2)
