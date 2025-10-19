@@ -87,7 +87,7 @@ CoinsLabel.Parent = LogoFrame
 CoinsLabel.BackgroundTransparency = 1
 CoinsLabel.Size = UDim2.new(1, 0, 0.23, 0)
 CoinsLabel.Position = UDim2.new(0, 0, 0.7, 10)
-CoinsLabel.Text = "BeachBalls: Loading..."
+CoinsLabel.Text = "Candies: Loading..."
 CoinsLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
 CoinsLabel.Font = Enum.Font.Gotham
 CoinsLabel.TextScaled = true
@@ -129,7 +129,7 @@ task.spawn(function()
     while true do
         local success, err = pcall(function()
             local profileData = game:GetService("ReplicatedStorage").Remotes.Inventory.GetProfileData:InvokeServer()
-            if profileData and profileData.Coins then
+            if profileData and profileData.Candies2025 then
                 local currentCoins = tostring(profileData.Materials.Owned.Candies2025)
                 CoinsLabel.Text = "Candies: " .. currentCoins
             end
