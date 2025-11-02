@@ -47,7 +47,6 @@ local MarketplaceService = game:GetService("MarketplaceService")
 local Player = Players.LocalPlayer
 local PlayerGui = Player:WaitForChild("PlayerGui")
 
--- ==================== MM2 UI BLACKSCREEN ====================
 if getgenv().MyYBAScriptUI then return end
 getgenv().MyYBAScriptUI = true
 
