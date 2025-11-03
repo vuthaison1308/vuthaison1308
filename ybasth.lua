@@ -1,5 +1,4 @@
-repeat wait() until game:IsLoaded()
-
+repeat wait() until game:IsLoaded() 
 wait(2)
 
 local BuyLucky = true
@@ -47,10 +46,22 @@ local MarketplaceService = game:GetService("MarketplaceService")
 local Player = Players.LocalPlayer
 local PlayerGui = Player:WaitForChild("PlayerGui")
 
+local function CountLuckyArrows()
+    local Count = 0
+    for _, Tool in pairs(Player.Backpack:GetChildren()) do
+        if Tool.Name == "Lucky Arrow" then
+            Count += 1
+        end
+    end
+    return Count
+end
+
 if getgenv().MyYBAScriptUI then return end
 getgenv().MyYBAScriptUI = true
 
-game:GetService("RunService"):Set3dRenderingEnabled(false)
+if _G.Disable3DRender then
+    game:GetService("RunService"):Set3dRenderingEnabled(false)
+end
 
 local ScreenGui = Instance.new("ScreenGui")
 ScreenGui.Parent = PlayerGui
@@ -64,6 +75,7 @@ BlackFrame.BorderSizePixel = 0
 BlackFrame.Size = UDim2.new(1, 0, 1, 0)
 BlackFrame.Position = UDim2.new(0, 0, 0, 0)
 BlackFrame.ZIndex = -1
+BlackFrame.Visible = _G.Disable3DRender
 
 local function cleanupOtherUIs()
     pcall(function()
@@ -81,14 +93,16 @@ local function cleanupOtherUIs()
     end)
 end
 
-cleanupOtherUIs()
-
-spawn(function()
-    while true do
-        wait(1)
-        cleanupOtherUIs()
-    end
-end)
+if _G.CleanupOtherUIs then
+    cleanupOtherUIs()
+    
+    spawn(function()
+        while true do
+            wait(1)
+            cleanupOtherUIs()
+        end
+    end)
+end
 
 local LogoFrame = Instance.new("Frame")
 LogoFrame.Parent = ScreenGui
@@ -96,14 +110,15 @@ LogoFrame.BackgroundTransparency = 1
 LogoFrame.Size = UDim2.new(0, 600, 0, 180)
 LogoFrame.Position = UDim2.new(0.5, -300, 0.5, -90)
 LogoFrame.ZIndex = 10
+LogoFrame.Visible = _G.Disable3DRender
 
 local MainTitle = Instance.new("TextLabel")
 MainTitle.Parent = LogoFrame
 MainTitle.BackgroundTransparency = 1
-MainTitle.Size = UDim2.new(1, 0, 0.5, 0)
+MainTitle.Size = UDim2.new(1, 0, 0.4, 0)
 MainTitle.Position = UDim2.new(0, 0, 0, 0)
-MainTitle.Text = "Theaug Hub"
-MainTitle.TextColor3 = Color3.fromRGB(0, 255, 255)
+MainTitle.Text = "Lucky Arrows: 0"
+MainTitle.TextColor3 = Color3.fromRGB(255, 215, 0)
 MainTitle.TextScaled = true
 MainTitle.Font = Enum.Font.GothamBold
 MainTitle.TextStrokeTransparency = 0
@@ -114,7 +129,7 @@ local SubTitle = Instance.new("TextLabel")
 SubTitle.Parent = LogoFrame
 SubTitle.BackgroundTransparency = 1
 SubTitle.Size = UDim2.new(1, 0, 0.20, 0)
-SubTitle.Position = UDim2.new(0, 0, 0.5, 0)
+SubTitle.Position = UDim2.new(0, 0, 0.45, 0)
 SubTitle.Text = "Your Bizarre Adventure"
 SubTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
 SubTitle.TextScaled = true
@@ -136,16 +151,16 @@ local RenderButton = Instance.new("TextButton")
 RenderButton.Parent = ScreenGui
 RenderButton.Size = UDim2.new(0, 80, 0, 80)
 RenderButton.Position = UDim2.new(0, 50, 0.5, -40)
-RenderButton.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+RenderButton.BackgroundColor3 = _G.Disable3DRender and Color3.fromRGB(50, 50, 50) or Color3.fromRGB(0, 150, 0)
 RenderButton.BorderSizePixel = 2
 RenderButton.BorderColor3 = Color3.fromRGB(0, 255, 255)
-RenderButton.Text = "3D\nOFF"
+RenderButton.Text = _G.Disable3DRender and "3D\nOFF" or "3D\nON"
 RenderButton.TextColor3 = Color3.fromRGB(255, 255, 255)
 RenderButton.TextScaled = true
 RenderButton.Font = Enum.Font.GothamBold
 RenderButton.ZIndex = 12
 
-local isUIVisible = true
+local isUIVisible = _G.Disable3DRender
 RenderButton.MouseButton1Click:Connect(function()
     isUIVisible = not isUIVisible
     
@@ -167,6 +182,9 @@ end)
 task.spawn(function()
     while true do
         local success, err = pcall(function()
+            local luckyCount = CountLuckyArrows()
+            MainTitle.Text = "Lucky Arrows: " .. tostring(luckyCount)
+            
             if Player.PlayerStats and Player.PlayerStats.Money then
                 local currentMoney = Player.PlayerStats.Money.Value or 0
                 MoneyLabel.Text = "Money: $" .. tostring(currentMoney)
@@ -180,7 +198,6 @@ task.spawn(function()
         wait(2)
     end
 end)
-
 
 game:GetService("CoreGui").DescendantAdded:Connect(function(child)
     if child.Name == "ErrorPrompt" then
@@ -390,7 +407,6 @@ local function SortItems()
 end
 
 while true do
-    -- Check if reached 1,000,000 coins limit
     local Money = Player.PlayerStats.Money
     if Money.Value >= 1000000 then
         print("Reached 1,000,000 coins! Stopping farm.")
