@@ -1,5 +1,5 @@
 repeat wait() until game:IsLoaded() 
-wait(2)
+wait(4)
 
 local BuyLucky = true
 local AutoSell = true
