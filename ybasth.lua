@@ -1,9 +1,3 @@
-_G.CleanupOtherUIs = false
-_G.Disable3DRender = true
-_G.ForcedHopEnable = true
-_G.HopWaitTime = 150 -- seconds
-
-
 repeat wait() until game:IsLoaded() 
 wait(2)
 
