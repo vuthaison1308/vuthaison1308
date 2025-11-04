@@ -427,7 +427,13 @@ end)
 
 repeat task.wait() until GetCharacter() and GetCharacter("RemoteEvent")
 
-GetCharacter("RemoteEvent"):FireServer("PressedPlay")
+task.spawn(function()
+    pcall(function()
+        while wait(.1) do
+            GetCharacter("RemoteEvent"):FireServer("PressedPlay")
+        end
+    end)
+end)
 
 TeleportTo(CFrame.new(978, -42, -49))
 
