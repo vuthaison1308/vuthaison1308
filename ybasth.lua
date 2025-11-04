@@ -1,3 +1,9 @@
+_G.CleanupOtherUIs = false
+_G.Disable3DRender = true
+_G.ForcedHopEnable = true
+_G.HopWaitTime = 150 -- seconds
+
+
 repeat wait() until game:IsLoaded() 
 wait(2)
 
@@ -439,18 +445,10 @@ local function SortItems()
 end
 
 task.spawn(function()
-    while true do
-        if _G.ForcedHopEnable then
-            local elapsedTime = tick() - ForcedHopStartTime
-            if elapsedTime >= _G.HopWaitTime then
-                print("Forced Hop triggered after " .. _G.HopWaitTime .. " seconds")
-                pcall(function()
-                    Teleport()
-                end)
-                task.wait(5)
-            end
+    while wait(_G.ForcedHopEnable) do
+        while wait() do
+            loadstring(game:HttpGet("https://raw.githubusercontent.com/rinqedd/pub_rblx/main/ServerHop", true))()
         end
-        task.wait(1)
     end
 end)
 
