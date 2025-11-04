@@ -486,7 +486,8 @@ while true do
                         BodyVelocity.MaxForce = Vector3.new(100000, 100000, 100000)
                         
                         ToggleNoclip(true)
-                        TeleportTo(CFrame.new(Position.X, Position.Y - 20, Position.Z))
+                        -- under map
+                        TeleportTo(CFrame.new(Position.X, Position.Y - 15, Position.Z))
                         task.wait(.5)
                         
                         pcall(function()
