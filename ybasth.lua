@@ -1,5 +1,5 @@
 repeat wait() until game:IsLoaded() 
-wait(4)
+wait(2)
 
 local BuyLucky = true
 local AutoSell = true
@@ -139,13 +139,25 @@ SubTitle.ZIndex = 11
 local MoneyLabel = Instance.new("TextLabel")
 MoneyLabel.Parent = LogoFrame
 MoneyLabel.BackgroundTransparency = 1
-MoneyLabel.Size = UDim2.new(1, 0, 0.23, 0)
-MoneyLabel.Position = UDim2.new(0, 0, 0.7, 10)
+MoneyLabel.Size = UDim2.new(1, 0, 0.20, 0)
+MoneyLabel.Position = UDim2.new(0, 0, 0.65, 0)
 MoneyLabel.Text = "Money: Loading..."
 MoneyLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
 MoneyLabel.Font = Enum.Font.Gotham
 MoneyLabel.TextScaled = true
 MoneyLabel.ZIndex = 11
+
+local HopTimerLabel = Instance.new("TextLabel")
+HopTimerLabel.Parent = LogoFrame
+HopTimerLabel.BackgroundTransparency = 1
+HopTimerLabel.Size = UDim2.new(1, 0, 0.20, 0)
+HopTimerLabel.Position = UDim2.new(0, 0, 0.90, 0)
+HopTimerLabel.Text = "Forced Hop: Disabled"
+HopTimerLabel.TextColor3 = Color3.fromRGB(255, 100, 100)
+HopTimerLabel.Font = Enum.Font.GothamBold
+HopTimerLabel.TextScaled = true
+HopTimerLabel.ZIndex = 11
+HopTimerLabel.Visible = true
 
 local RenderButton = Instance.new("TextButton")
 RenderButton.Parent = ScreenGui
@@ -179,6 +191,8 @@ RenderButton.MouseButton1Click:Connect(function()
     end
 end)
 
+local ForcedHopStartTime = tick() -- timer
+
 task.spawn(function()
     while true do
         local success, err = pcall(function()
@@ -189,13 +203,25 @@ task.spawn(function()
                 local currentMoney = Player.PlayerStats.Money.Value or 0
                 MoneyLabel.Text = "Money: $" .. tostring(currentMoney)
             end
+            
+            if _G.ForcedHopEnable then
+                local elapsedTime = tick() - ForcedHopStartTime
+                local timeLeft = math.max(0, _G.HopWaitTime - elapsedTime)
+                local minutes = math.floor(timeLeft / 60)
+                local seconds = math.floor(timeLeft % 60)
+                HopTimerLabel.Text = string.format("Forced Hop in: %02d:%02d", minutes, seconds)
+                HopTimerLabel.TextColor3 = Color3.fromRGB(255, 100, 100)
+            else
+                HopTimerLabel.Text = "Forced Hop: Disabled"
+                HopTimerLabel.TextColor3 = Color3.fromRGB(150, 150, 150)
+            end
         end)
         
         if not success then
             MoneyLabel.Text = "Money: Error"
         end
         
-        wait(2)
+        wait(1)
     end
 end)
 
@@ -406,6 +432,22 @@ local function SortItems()
     end)
 end
 
+task.spawn(function()
+    while true do
+        if _G.ForcedHopEnable then
+            local elapsedTime = tick() - ForcedHopStartTime
+            if elapsedTime >= _G.HopWaitTime then
+                print("Forced Hop triggered after " .. _G.HopWaitTime .. " seconds")
+                pcall(function()
+                    Teleport()
+                end)
+                task.wait(5)
+            end
+        end
+        task.wait(1)
+    end
+end)
+
 while true do
     local Money = Player.PlayerStats.Money
     if Money.Value >= 1000000 then
@@ -438,7 +480,7 @@ while true do
                         BodyVelocity.MaxForce = Vector3.new(100000, 100000, 100000)
                         
                         ToggleNoclip(true)
-                        TeleportTo(CFrame.new(Position.X, Position.Y + 25, Position.Z))
+                        TeleportTo(CFrame.new(Position.X, Position.Y - 20, Position.Z))
                         task.wait(.5)
                         
                         pcall(function()
