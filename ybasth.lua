@@ -1,6 +1,12 @@
 repeat wait() until game:IsLoaded() 
 wait(2)
 
+game:GetService("Players").LocalPlayer.Idled:Connect(function()
+    game:GetService("VirtualUser"):Button2Down(Vector2.new(0, 0), workspace.CurrentCamera.CFrame)
+    task.wait(1)
+    game:GetService("VirtualUser"):Button2Up(Vector2.new(0, 0), workspace.CurrentCamera.CFrame)
+end)
+
 local BuyLucky = true
 local AutoSell = true
 local Hop = true
