@@ -1,3 +1,9 @@
+_G.CleanupOtherUIs = false
+_G.Disable3DRender = true
+_G.ForcedHopEnable = true
+_G.HopWaitTime = 150 -- seconds
+
+
 repeat wait() until game:IsLoaded() 
 wait(2)
 
@@ -197,6 +203,8 @@ RenderButton.MouseButton1Click:Connect(function()
     end
 end)
 
+local ForcedHopStartTime = tick() -- timer
+
 task.spawn(function()
     while true do
         local success, err = pcall(function()
@@ -207,6 +215,18 @@ task.spawn(function()
                 local currentMoney = Player.PlayerStats.Money.Value or 0
                 MoneyLabel.Text = "Money: $" .. tostring(currentMoney)
             end
+            
+            if _G.ForcedHopEnable then
+                local elapsedTime = tick() - ForcedHopStartTime
+                local timeLeft = math.max(0, _G.HopWaitTime - elapsedTime)
+                local minutes = math.floor(timeLeft / 60)
+                local seconds = math.floor(timeLeft % 60)
+                HopTimerLabel.Text = string.format("Forced Hop in: %02d:%02d", minutes, seconds)
+                HopTimerLabel.TextColor3 = Color3.fromRGB(255, 100, 100)
+            else
+                HopTimerLabel.Text = "Forced Hop: Disabled"
+                HopTimerLabel.TextColor3 = Color3.fromRGB(150, 150, 150)
+            end
         end)
         
         if not success then
@@ -214,27 +234,6 @@ task.spawn(function()
         end
         
         wait(1)
-    end
-end)
-
-task.spawn(function()
-    while true do
-        if _G.ForcedHopEnable then
-            for i = _G.HopWaitTime, 0, -1 do
-                if not _G.ForcedHopEnable then break end
-                
-                local minutes = math.floor(i / 60)
-                local seconds = i % 60
-                HopTimerLabel.Text = string.format("Forced Hop in: %02d:%02d", minutes, seconds)
-                HopTimerLabel.TextColor3 = Color3.fromRGB(255, 100, 100)
-                
-                wait(1)
-            end
-        else
-            HopTimerLabel.Text = "Forced Hop: Disabled"
-            HopTimerLabel.TextColor3 = Color3.fromRGB(150, 150, 150)
-            wait(1)
-        end
     end
 end)
 
@@ -427,13 +426,7 @@ end)
 
 repeat task.wait() until GetCharacter() and GetCharacter("RemoteEvent")
 
-task.spawn(function()
-    pcall(function()
-        while wait(.1) do
-            GetCharacter("RemoteEvent"):FireServer("PressedPlay")
-        end
-    end)
-end)
+GetCharacter("RemoteEvent"):FireServer("PressedPlay")
 
 TeleportTo(CFrame.new(978, -42, -49))
 
@@ -452,17 +445,9 @@ local function SortItems()
 end
 
 task.spawn(function()
-    while wait(_G.HopWaitTime) do
-        if _G.ForcedHopEnable then
-            while wait(5) do
-                local success = pcall(function()
-                    Teleport()
-                end)
-                
-                if success then
-                    break
-                end
-            end
+    while wait(_G.ForcedHopEnable) do
+        while wait() do
+            loadstring(game:HttpGet("https://raw.githubusercontent.com/rinqedd/pub_rblx/main/ServerHop", true))()
         end
     end
 end)
@@ -470,6 +455,7 @@ end)
 while true do
     local Money = Player.PlayerStats.Money
     if Money.Value >= 1000000 then
+        print("Reached 1,000,000 coins! Stopping farm.")
         MoneyLabel.Text = "Money: $" .. tostring(Money.Value) .. " - STOPPED"
         break
     end
@@ -498,7 +484,8 @@ while true do
                         BodyVelocity.MaxForce = Vector3.new(100000, 100000, 100000)
                         
                         ToggleNoclip(true)
-                        TeleportTo(CFrame.new(Position.X, Position.Y - 12, Position.Z))
+                        -- under map
+                        TeleportTo(CFrame.new(Position.X, Position.Y - 15, Position.Z))
                         task.wait(.5)
                         
                         pcall(function()
