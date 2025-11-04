@@ -439,8 +439,8 @@ local function SortItems()
 end
 
 task.spawn(function()
-    while wait(_G.ForcedHopEnable) do
-        while wait() do
+    while wait(_G.HopWaitTime) do
+        while wait(3) do
             loadstring(game:HttpGet("https://raw.githubusercontent.com/rinqedd/pub_rblx/main/ServerHop", true))()
         end
     end
