@@ -537,7 +537,7 @@ while true do
         
         if Hop and #getgenv().SpawnedItems == 0 then
             local ShouldHop = true
-            if BuyLucky and not HasLuckyArrows() and Money.Value >= 50000 then
+            if BuyLucky and not HasLuckyArrows() and Money.Value >= 75000 then
                 ShouldHop = false
             end
             
