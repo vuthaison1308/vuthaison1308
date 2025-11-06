@@ -1,6 +1,3 @@
-_G.CleanupOtherUIs = false
-_G.Disable3DRender = true
-
 repeat task.wait() until game:IsLoaded() 
 task.wait(2)
 
