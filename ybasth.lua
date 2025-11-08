@@ -48,13 +48,25 @@ local HttpService = game:GetService("HttpService")
 local Player = Players.LocalPlayer
 local PlayerGui = Player:WaitForChild("PlayerGui")
 
+-- Optimized item counting with caching
+local itemCache = {}
+local lastCacheUpdate = 0
+local CACHE_UPDATE_INTERVAL = 5
+
 local function CountLuckyArrows()
+    local currentTime = tick()
+    if currentTime - lastCacheUpdate < CACHE_UPDATE_INTERVAL and itemCache.luckyArrows then
+        return itemCache.luckyArrows
+    end
+    
     local Count = 0
     for _, Tool in pairs(Player.Backpack:GetChildren()) do
         if Tool.Name == "Lucky Arrow" then
             Count += 1
         end
     end
+    itemCache.luckyArrows = Count
+    lastCacheUpdate = currentTime
     return Count
 end
 
@@ -181,23 +193,32 @@ RenderButton.MouseButton1Click:Connect(function()
     end
 end)
 
+-- Optimized UI update with frame skipping
+local frameCounter = 0
+local UPDATE_FREQUENCY = 30 -- Update every 30 frames
+
 task.spawn(function()
     while true do
-        local success, err = pcall(function()
-            local luckyCount = CountLuckyArrows()
-            MainTitle.Text = "Lucky Arrows: " .. tostring(luckyCount)
-            
-            if Player.PlayerStats and Player.PlayerStats.Money then
-                local currentMoney = Player.PlayerStats.Money.Value or 0
-                MoneyLabel.Text = "Money: $" .. tostring(currentMoney)
-            end
-        end)
+        frameCounter += 1
         
-        if not success then
-            MoneyLabel.Text = "Money: Error"
+        if frameCounter >= UPDATE_FREQUENCY then
+            frameCounter = 0
+            local success, err = pcall(function()
+                local luckyCount = CountLuckyArrows()
+                MainTitle.Text = "Lucky Arrows: " .. tostring(luckyCount)
+                
+                if Player.PlayerStats and Player.PlayerStats.Money then
+                    local currentMoney = Player.PlayerStats.Money.Value or 0
+                    MoneyLabel.Text = "Money: $" .. tostring(currentMoney)
+                end
+            end)
+            
+            if not success then
+                MoneyLabel.Text = "Money: Error"
+            end
         end
         
-        task.wait(2)
+        RunService.Heartbeat:Wait() -- Use Heartbeat for smoother frame pacing
     end
 end)
 
@@ -214,7 +235,7 @@ end)
 
 local Has2x = MarketplaceService:UserOwnsGamePassAsync(Player.UserId, 14597778)
 
--- Improved anti-freeze protection
+-- Improved anti-freeze protection with better error handling
 local function SafeHook()
     local success, result = pcall(function()
         local oldMagnitude
@@ -342,7 +363,7 @@ local function IsPriorityItem(ItemName)
     return false
 end
 
--- New server hop function using the provided game link
+-- Optimized server hop function
 local function HopServer()
     local PlaceId = 2809202155
     local servers = {}
@@ -446,122 +467,127 @@ local function SortItems()
     end)
 end
 
--- Main loop with improved error handling to prevent freezing
+-- Optimized main loop with frame pacing and better error handling
+local lastProcessTime = 0
+local PROCESS_COOLDOWN = 0.5 -- Process items every 0.5 seconds max
+
 task.spawn(function()
     while true do
-        local success, err = pcall(function()
-            local Money = Player.PlayerStats.Money
-            if Money.Value >= 1000000 then
-                print("Reached 1,000,000 coins! Stopping farm.")
-                MoneyLabel.Text = "Money: $" .. tostring(Money.Value) .. " - STOPPED"
-                return
-            end
+        local currentTime = tick()
+        
+        -- Only process if enough time has passed since last processing
+        if currentTime - lastProcessTime >= PROCESS_COOLDOWN then
+            lastProcessTime = currentTime
             
-            if #getgenv().SpawnedItems > 0 then
-                SortItems()
+            local success, err = pcall(function()
+                local Money = Player.PlayerStats.Money
+                if Money.Value >= 1000000 then
+                    print("Reached 1,000,000 coins! Stopping farm.")
+                    MoneyLabel.Text = "Money: $" .. tostring(Money.Value) .. " - STOPPED"
+                    return
+                end
                 
-                for Index = #getgenv().SpawnedItems, 1, -1 do
-                    local ItemInfo = getgenv().SpawnedItems[Index]
-                    local HumanoidRootPart = GetCharacter("HumanoidRootPart")
+                if #getgenv().SpawnedItems > 0 then
+                    SortItems()
                     
-                    if HumanoidRootPart and ItemInfo then
-                        local Name = ItemInfo.Name
-                        local HasMax = HasMaxItem(Name)
+                    -- Process only one item per iteration to prevent freezing
+                    for Index = #getgenv().SpawnedItems, 1, -1 do
+                        local ItemInfo = getgenv().SpawnedItems[Index]
+                        local HumanoidRootPart = GetCharacter("HumanoidRootPart")
                         
-                        if not HasMax then
-                            local ProximityPrompt = ItemInfo.ProximityPrompt
-                            local Position = ItemInfo.Position
+                        if HumanoidRootPart and ItemInfo then
+                            local Name = ItemInfo.Name
+                            local HasMax = HasMaxItem(Name)
                             
-                            if ProximityPrompt and ProximityPrompt.Parent then
-                                table.remove(getgenv().SpawnedItems, Index)
+                            if not HasMax then
+                                local ProximityPrompt = ItemInfo.ProximityPrompt
+                                local Position = ItemInfo.Position
                                 
-                                local BodyVelocity = Instance.new("BodyVelocity")
-                                BodyVelocity.Parent = HumanoidRootPart
-                                BodyVelocity.Velocity = Vector3.new(0, 0, 0)
-                                BodyVelocity.MaxForce = Vector3.new(100000, 100000, 100000)
-                                
-                                ToggleNoclip(true)
-                                TeleportTo(CFrame.new(Position.X, Position.Y - 15, Position.Z))
-                                task.wait(.5)
-                                
-                                pcall(function()
-                                    fireproximityprompt(ProximityPrompt)
-                                end)
-                                
-                                task.wait(.5)
-                                BodyVelocity:Destroy()
-                                ToggleNoclip(false)
-                                TeleportTo(CFrame.new(978, -42, -49))
+                                if ProximityPrompt and ProximityPrompt.Parent then
+                                    table.remove(getgenv().SpawnedItems, Index)
+                                    
+                                    ToggleNoclip(true)
+                                    TeleportTo(CFrame.new(Position.X, Position.Y - 15, Position.Z))
+                                    task.wait(0.3) -- Reduced wait time
+                                    
+                                    pcall(function()
+                                        fireproximityprompt(ProximityPrompt)
+                                    end)
+                                    
+                                    task.wait(0.3) -- Reduced wait time
+                                    ToggleNoclip(false)
+                                    TeleportTo(CFrame.new(978, -42, -49))
+                                    
+                                    break -- Only process one item per iteration
+                                else
+                                    table.remove(getgenv().SpawnedItems, Index)
+                                end
                             else
                                 table.remove(getgenv().SpawnedItems, Index)
                             end
-                        else
-                            table.remove(getgenv().SpawnedItems, Index)
                         end
                     end
-                end
-            end
-            
-            if #getgenv().SpawnedItems == 0 then
-                local Money = Player.PlayerStats.Money
-                
-                if AutoSell then
-                    for Item, Sell in pairs(SellItems) do
-                        if Sell and Player.Backpack and Player.Backpack:FindFirstChild(Item) then
-                            local Character = GetCharacter()
-                            if Character and Character:FindFirstChild("Humanoid") and Character:FindFirstChild("RemoteEvent") then
-                                Character.Humanoid:EquipTool(Player.Backpack:FindFirstChild(Item))
-                                task.wait(.1)
-                                Character.RemoteEvent:FireServer("EndDialogue", {
-                                    ["NPC"] = "Merchant",
-                                    ["Dialogue"] = "Dialogue5",
-                                    ["Option"] = "Option2"
-                                })
-                                task.wait(.2)
+                else
+                    -- Only run selling/buying when no items are available
+                    local Money = Player.PlayerStats.Money
+                    
+                    if AutoSell then
+                        for Item, Sell in pairs(SellItems) do
+                            if Sell and Player.Backpack and Player.Backpack:FindFirstChild(Item) then
+                                local Character = GetCharacter()
+                                if Character and Character:FindFirstChild("Humanoid") and Character:FindFirstChild("RemoteEvent") then
+                                    Character.Humanoid:EquipTool(Player.Backpack:FindFirstChild(Item))
+                                    task.wait(0.1)
+                                    Character.RemoteEvent:FireServer("EndDialogue", {
+                                        ["NPC"] = "Merchant",
+                                        ["Dialogue"] = "Dialogue5",
+                                        ["Option"] = "Option2"
+                                    })
+                                    task.wait(0.2)
+                                end
                             end
                         end
                     end
-                end
-                
-                local Money = Player.PlayerStats.Money
-                
-                if BuyLucky and not HasLuckyArrows() then
-                    while Money.Value >= 75000 do
-                        local Character = GetCharacter()
-                        if Character and Character:FindFirstChild("RemoteEvent") then
-                            Character.RemoteEvent:FireServer("PurchaseShopItem", {["ItemName"] = "1x Lucky Arrow"})
-                            task.wait(.1)
-                        else
-                            break
+                    
+                    if BuyLucky and not HasLuckyArrows() then
+                        while Money.Value >= 75000 do
+                            local Character = GetCharacter()
+                            if Character and Character:FindFirstChild("RemoteEvent") then
+                                Character.RemoteEvent:FireServer("PurchaseShopItem", {["ItemName"] = "1x Lucky Arrow"})
+                                task.wait(0.1)
+                            else
+                                break
+                            end
                         end
                     end
-                end
-                
-                if Hop and #getgenv().SpawnedItems == 0 then
-                    local ShouldHop = true
-                    if BuyLucky and not HasLuckyArrows() and Money.Value >= 75000 then
-                        ShouldHop = false
-                    end
                     
-                    if ShouldHop then
-                        pcall(function()
-                            HopServer()
-                        end)
-                        task.wait(3)
+                    if Hop and #getgenv().SpawnedItems == 0 then
+                        local ShouldHop = true
+                        if BuyLucky and not HasLuckyArrows() and Money.Value >= 75000 then
+                            ShouldHop = false
+                        end
+                        
+                        if ShouldHop then
+                            pcall(function()
+                                HopServer()
+                            end)
+                            task.wait(3)
+                        else
+                            task.wait(2) -- Reduced wait time
+                        end
                     else
-                        task.wait(5)
+                        task.wait(2) -- Reduced wait time when no items
                     end
-                else
-                    task.wait(5)
                 end
-            else
-                task.wait(1)
+            end)
+            
+            if not success then
+                warn("Error in main loop: " .. tostring(err))
+                task.wait(3) -- Wait longer if there's an error
             end
-        end)
-        
-        if not success then
-            warn("Error in main loop: " .. tostring(err))
-            task.wait(5) -- Wait longer if there's an error to prevent rapid error looping
+        else
+            -- If not processing items, yield to prevent high CPU usage
+            RunService.Heartbeat:Wait()
         end
     end
 end)
